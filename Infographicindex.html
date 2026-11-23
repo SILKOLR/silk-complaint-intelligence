@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090909">
+  <title>_S.I.L.K™ | Complaint Intelligence</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --black: #090909;
+      --gold: #d7b85b;
+      --gold-bright: #f0d783;
+      --gold-dim: #806b37;
+      --white: #f4f1e8;
+      --muted: #a7a397;
+      --line: rgba(215, 184, 91, .2);
+      --content: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      overflow-x: hidden;
+      background:
+        radial-gradient(ellipse at 50% 7%, rgba(166, 132, 47, .12), transparent 36rem),
+        var(--black);
+      color: var(--white);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    button { font: inherit; }
+    button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--gold-bright);
+      outline-offset: 4px;
+    }
+
+    .shell {
+      width: min(var(--content), calc(100% - 44px));
+      margin-inline: auto;
+    }
+
+    .ambient {
+      position: fixed;
+      z-index: -1;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .ambient::before,
+    .ambient::after {
+      position: absolute;
+      width: 32rem;
+      height: 32rem;
+      border-radius: 50%;
+      background: var(--gold);
+      content: "";
+      filter: blur(100px);
+      opacity: .08;
+      animation: drift 16s ease-in-out infinite alternate;
+    }
+
+    .ambient::before { top: 20%; left: -22rem; }
+    .ambient::after { right: -24rem; bottom: 4%; animation-delay: -7s; }
+
+    @keyframes drift {
+      from { transform: translate3d(0, -2rem, 0) scale(.8); }
+      to { transform: translate3d(3rem, 3rem, 0) scale(1.15); }
+    }
+
+    .topbar {
+      position: absolute;
+      z-index: 3;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 25px 0;
+    }
+
+    .topbar-inner, .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--white);
+      font-size: .95rem;
+      font-weight: 650;
+      letter-spacing: .16em;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .brand sup, .footer-brand sup {
+      position: relative;
+      top: -.35em;
+      margin-left: 2px;
+      color: var(--gold-bright);
+      font-size: .53em;
+      letter-spacing: 0;
+    }
+
+    .topbar-note, .eyebrow {
+      color: var(--gold);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      min-height: min(840px, 100svh);
+      place-items: center;
+      padding: 130px 0 80px;
+      text-align: center;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      width: min(850px, 100%);
+      animation: rise-in .9s both;
+    }
+
+    @keyframes rise-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-orbit {
+      position: absolute;
+      z-index: -1;
+      top: 50%;
+      left: 50%;
+      width: min(78vw, 680px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(215, 184, 91, .08);
+      border-radius: 50%;
+      transform: translate(-50%, -51%);
+      animation: orbit-pulse 7s ease-in-out infinite;
+    }
+
+    .hero-orbit::before, .hero-orbit::after {
+      position: absolute;
+      inset: 8%;
+      border: 1px solid rgba(215, 184, 91, .07);
+      border-radius: inherit;
+      content: "";
+    }
+
+    .hero-orbit::after { inset: 19%; }
+
+    @keyframes orbit-pulse {
+      0%, 100% { opacity: .5; transform: translate(-50%, -51%) scale(.96); }
+      50% { opacity: 1; transform: translate(-50%, -51%) scale(1.02); }
+    }
+
+    .hero-count {
+      margin: 22px 0 12px;
+      color: var(--gold-bright);
+      font-size: clamp(3.2rem, 9vw, 7.6rem);
+      font-weight: 620;
+      letter-spacing: -.065em;
+      line-height: .98;
+      text-shadow: 0 0 48px rgba(215, 184, 91, .19);
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: clamp(1.35rem, 3vw, 2.3rem);
+      font-weight: 450;
+      letter-spacing: -.025em;
+    }
+
+    .hero-subtitle {
+      max-width: 580px;
+      margin: 18px auto 0;
+      color: var(--muted);
+      font-size: clamp(.98rem, 1.6vw, 1.15rem);
+    }
+
+    .hero-subtitle strong { color: var(--white); font-weight: 550; }
+
+    .pulse-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 37px;
+      color: var(--gold);
+      font-size: .73rem;
+      font-weight: 700;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold-bright);
+      box-shadow: 0 0 0 0 rgba(240, 215, 131, .6);
+      animation: dot-pulse 2s infinite;
+    }
+
+    @keyframes dot-pulse {
+      70% { box-shadow: 0 0 0 9px rgba(240, 215, 131, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(240, 215, 131, 0); }
+    }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 26px;
+      left: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: #77746a;
+      font-size: .65rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      transform: translateX(-50%);
+    }
+
+    .scroll-cue span:last-child {
+      width: 1px;
+      height: 30px;
+      background: linear-gradient(var(--gold), transparent);
+    }
+
+    main { padding-bottom: 65px; }
+    .experience { padding: 45px 0 90px; }
+    .section-heading { margin-bottom: 28px; }
+
+    .section-heading h2 {
+      margin: 9px 0 6px;
+      font-size: clamp(1.65rem, 3vw, 2.5rem);
+      font-weight: 500;
+      letter-spacing: -.04em;
+    }
+
+    .section-heading p {
+      max-width: 640px;
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .selector-card, .panel, .insight-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(28, 27, 24, .93), rgba(15, 15, 14, .96));
+      box-shadow: 0 18px 70px rgba(0, 0, 0, .24);
+    }
+
+    .selector-card { padding: clamp(20px, 4vw, 34px); }
+
+    .selector-label {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 650;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .complaint-options {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .complaint-option {
+      min-height: 76px;
+      padding: 14px 12px;
+      border: 1px solid rgba(255, 255, 255, .09);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .025);
+      color: #c9c6bc;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color .2s, color .2s, background .2s, transform .2s;
+    }
+
+    .complaint-option:hover {
+      border-color: rgba(215, 184, 91, .55);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .complaint-option[aria-pressed="true"] {
+      border-color: var(--gold);
+      background: rgba(215, 184, 91, .1);
+      color: var(--gold-bright);
+      box-shadow: inset 0 0 0 1px rgba(215, 184, 91, .08), 0 0 26px rgba(215, 184, 91, .07);
+    }
+
+    .option-indicator {
+      display: block;
+      width: 8px;
+      height: 8px;
+      margin-bottom: 10px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+    }
+
+    [aria-pressed="true"] .option-indicator {
+      background: var(--gold-bright);
+      box-shadow: 0 0 11px var(--gold);
+    }
+
+    .option-text { font-size: .88rem; font-weight: 570; }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .93fr) minmax(0, 1.07fr);
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: clamp(20px, 3.2vw, 30px);
+      overflow: hidden;
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+
+    .panel-heading h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 550;
+      letter-spacing: -.02em;
+    }
+
+    .panel-heading p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .tag {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      border: 1px solid rgba(215, 184, 91, .27);
+      border-radius: 999px;
+      color: var(--gold);
+      font-size: .64rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .dna-wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 156px;
+      align-items: center;
+      gap: 10px;
+      min-height: 270px;
+    }
+
+    .helix-svg {
+      display: block;
+      width: 100%;
+      height: 260px;
+      overflow: visible;
+    }
+
+    .helix-backdrop { fill: none; stroke: rgba(215, 184, 91, .08); stroke-width: 1; }
+
+    .helix-strand {
+      fill: none;
+      stroke: url(#strandGradient);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-dasharray: 4 5;
+      animation: strand-flow 9s linear infinite;
+      filter: drop-shadow(0 0 5px rgba(215, 184, 91, .38));
+    }
+
+    .helix-strand.secondary { animation-direction: reverse; opacity: .66; }
+    @keyframes strand-flow { to { stroke-dashoffset: -90; } }
+
+    .helix-rung { stroke: rgba(215, 184, 91, .25); stroke-width: 1; }
+    .helix-rung.active {
+      stroke: var(--gold-bright);
+      stroke-width: 1.5;
+      filter: drop-shadow(0 0 4px rgba(240, 215, 131, .9));
+    }
+
+    .helix-node { fill: #19160e; stroke: var(--gold-dim); stroke-width: 1.2; }
+    .helix-node.active {
+      fill: var(--gold-bright);
+      stroke: #fff1bd;
+      filter: drop-shadow(0 0 7px rgba(240, 215, 131, .95));
+      animation: node-glow 2.1s ease-in-out infinite alternate;
+    }
+
+    @keyframes node-glow { to { opacity: .65; } }
+
+    .dna-legend { display: flex; flex-direction: column; gap: 12px; }
+
+    .dna-factor {
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      align-items: center;
+      gap: 9px;
+      color: #8f8c81;
+      font-size: .78rem;
+      transition: color .35s, transform .35s;
+    }
+
+    .dna-factor.is-active { color: var(--white); transform: translateX(3px); }
+
+    .factor-letter {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border: 1px solid rgba(215, 184, 91, .24);
+      border-radius: 8px;
+      color: var(--gold-dim);
+      font-size: .72rem;
+      font-weight: 750;
+      transition: all .35s;
+    }
+
+    .dna-factor.is-active .factor-letter {
+      border-color: var(--gold);
+      background: rgba(215, 184, 91, .1);
+      color: var(--gold-bright);
+      box-shadow: 0 0 14px rgba(215, 184, 91, .12);
+    }
+
+    .dna-code-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding-top: 17px;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .dna-code-caption {
+      color: var(--muted);
+      font-size: .73rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .dna-code {
+      color: var(--gold-bright);
+      font-size: clamp(1.25rem, 3vw, 1.8rem);
+      font-weight: 650;
+      letter-spacing: .12em;
+      text-shadow: 0 0 20px rgba(215, 184, 91, .25);
+    }
+
+    .dna-signature {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .bridge { height: 42px; margin: 0 10%; overflow: visible; }
+    .bridge path {
+      fill: none;
+      stroke: rgba(215, 184, 91, .28);
+      stroke-width: 1.4;
+      stroke-dasharray: 5 7;
+    }
+    .bridge circle { fill: var(--gold-bright); filter: drop-shadow(0 0 4px var(--gold)); }
+    .bridge .particle-a { animation: travel 3.5s linear infinite; }
+    .bridge .particle-b { animation: travel 3.5s linear -1.6s infinite; }
+
+    @keyframes travel {
+      from { transform: translateX(0); opacity: 0; }
+      12% { opacity: 1; }
+      88% { opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+
+    .pathway-panel { padding-bottom: 25px; }
+
+    .pathway {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      margin-top: 22px;
+    }
+
+    .pathway::before {
+      position: absolute;
+      top: 15px;
+      bottom: 18px;
+      left: 14px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--gold), rgba(215, 184, 91, .1));
+      content: "";
+    }
+
+    .path-step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 12px;
+      min-height: 48px;
+      opacity: 0;
+      transform: translateX(9px);
+      animation: step-in .45s ease forwards;
+    }
+
+    .path-step:nth-child(2) { animation-delay: .06s; }
+    .path-step:nth-child(3) { animation-delay: .12s; }
+    .path-step:nth-child(4) { animation-delay: .18s; }
+    .path-step:nth-child(5) { animation-delay: .24s; }
+    .path-step:nth-child(6) { animation-delay: .30s; }
+
+    @keyframes step-in { to { opacity: 1; transform: translateX(0); } }
+
+    .step-marker {
+      z-index: 1;
+      display: grid;
+      width: 29px;
+      height: 29px;
+      place-items: center;
+      border: 1px solid var(--gold-dim);
+      border-radius: 50%;
+      background: #171611;
+      color: var(--gold-bright);
+      font-size: .67rem;
+      font-weight: 750;
+    }
+
+    .path-step:last-child .step-marker {
+      border-color: var(--gold);
+      background: rgba(215, 184, 91, .13);
+      box-shadow: 0 0 18px rgba(215, 184, 91, .18);
+    }
+
+    .step-copy { padding: 2px 0 14px; }
+
+    .step-label {
+      display: block;
+      color: #8f8c81;
+      font-size: .64rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .step-value {
+      display: block;
+      margin-top: 2px;
+      color: #e7e3d8;
+      font-size: .9rem;
+      font-weight: 540;
+    }
+
+    .path-step:last-child .step-value { color: var(--gold-bright); }
+
+    .insight-card {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 30px;
+      margin-top: 18px;
+      padding: clamp(22px, 4vw, 34px);
+    }
+
+    .insight-title { margin: 0 0 6px; font-size: 1.15rem; font-weight: 550; }
+    .insight-intro { margin: 0 0 21px; color: var(--muted); font-size: .85rem; }
+
+    .root-label, .impact-title {
+      color: var(--muted);
+      font-size: .71rem;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .root-condition {
+      margin-top: 7px;
+      color: var(--gold-bright);
+      font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+      font-weight: 560;
+      letter-spacing: -.025em;
+    }
+
+    .exposure-score {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid rgba(215, 184, 91, .2);
+      border-radius: 14px;
+      background: rgba(215, 184, 91, .035);
+    }
+
+    .score-value {
+      color: var(--gold-bright);
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .score-label {
+      color: var(--muted);
+      font-size: .75rem;
+      text-transform: uppercase;
+    }
+
+    .insight-sequence { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 17px; }
+
+    .sequence-chip {
+      padding: 5px 9px;
+      border: 1px solid rgba(215, 184, 91, .2);
+      border-radius: 999px;
+      color: #d8d1bd;
+      font-size: .72rem;
+    }
+
+    .impact-column {
+      padding-left: 25px;
+      border-left: 1px solid rgba(255, 255, 255, .09);
+    }
+
+    .impact-title { margin: 3px 0 15px; }
+
+    .impact-list {
+      display: grid;
+      gap: 11px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .impact-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ddd9ce;
+      font-size: .88rem;
+    }
+
+    .impact-arrow { color: var(--gold); font-size: 1.05rem; }
+
+    .finale {
+      position: relative;
+      display: grid;
+      min-height: 650px;
+      place-items: center;
+      margin-top: 15px;
+      padding: 80px 20px;
+      overflow: hidden;
+      border-top: 1px solid rgba(215, 184, 91, .12);
+      border-bottom: 1px solid rgba(215, 184, 91, .12);
+      background:
+        radial-gradient(ellipse at center, rgba(173, 137, 47, .11), transparent 60%),
+        #080808;
+      text-align: center;
+    }
+
+    .finale-content { width: min(950px, 100%); }
+    .finale .eyebrow { margin-bottom: 16px; }
+
+    .finale h3 {
+      margin: 0 0 28px;
+      color: var(--white);
+      font-size: clamp(1.25rem, 2.6vw, 1.8rem);
+      font-weight: 500;
+      letter-spacing: -.02em;
+    }
+
+    .silk-stack {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin: 0 auto 54px;
+    }
+
+    .stack-item {
+      padding: 10px 14px;
+      border: 1px solid rgba(215, 184, 91, .28);
+      border-radius: 10px;
+      background: rgba(215, 184, 91, .055);
+      color: #e4dcc8;
+      font-size: .82rem;
+      font-weight: 550;
+    }
+
+    .stack-item:last-child {
+      border-color: var(--gold);
+      color: var(--gold-bright);
+      box-shadow: 0 0 20px rgba(215, 184, 91, .1);
+    }
+
+    .stack-arrow { color: var(--gold); font-size: 1rem; }
+
+    .framework-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .framework-links span {
+      padding: 5px 9px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: .68rem;
+      letter-spacing: .04em;
+    }
+
+    .finale-divider {
+      width: 56px;
+      height: 1px;
+      margin: 34px auto;
+      background: var(--gold);
+      box-shadow: 0 0 14px var(--gold);
+    }
+
+    .finale h2 {
+      margin: 0 auto;
+      color: var(--gold-bright);
+      font-size: clamp(2.2rem, 6vw, 5rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -.055em;
+      text-wrap: balance;
+      text-shadow: 0 0 44px rgba(215, 184, 91, .12);
+    }
+
+    .finale-statement {
+      margin: 27px 0 0;
+      color: #d8d4c9;
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      font-weight: 430;
+    }
+
+    .finale-statement strong { color: var(--white); font-weight: 600; }
+
+    .footer {
+      padding: 25px 0 35px;
+      color: #77746a;
+      font-size: .73rem;
+    }
+
+    .footer-brand {
+      color: #c4bdab;
+      font-weight: 650;
+      letter-spacing: .13em;
+    }
+
+    @media (max-width: 900px) {
+      .complaint-options { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .analysis-grid { grid-template-columns: 1fr; }
+      .dna-wrap { grid-template-columns: minmax(0, 1fr) 190px; }
+      .bridge { width: 42px; margin: 2px auto; transform: rotate(90deg); }
+    }
+
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 30px, var(--content)); }
+      .topbar { padding: 18px 0; }
+      .topbar-note { font-size: .58rem; letter-spacing: .12em; }
+      .hero { min-height: 92svh; }
+      .hero-orbit { width: 96vw; }
+      .brand-logo { width: 36px; height: 36px; }
+      .experience { padding-top: 18px; }
+      .complaint-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .complaint-option { min-height: 68px; }
+      .dna-wrap { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+      .helix-svg { height: 220px; }
+      .dna-legend {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+        padding: 2px 0 16px;
+      }
+      .dna-factor { font-size: .73rem; }
+      .insight-card { grid-template-columns: 1fr; gap: 22px; }
+      .impact-column {
+        padding: 19px 0 0;
+        border-top: 1px solid rgba(255, 255, 255, .09);
+        border-left: 0;
+      }
+      .silk-stack { flex-direction: column; margin-bottom: 42px; }
+      .stack-arrow { transform: rotate(90deg); }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="#" aria-label="_S.I.L.K trademark">
+        <svg class="brand-logo" viewBox="0 0 512 512" role="img" aria-label="_S.I.L.K">
+          <rect width="512" height="512" fill="white"/>
+          <path fill="#DCA83E" d="
+            M260 78
+            C158 78 87 143 78 229
+            C74 268 82 301 99 326
+            C104 335 99 350 89 363
+            C73 385 64 416 66 452
+            C68 491 97 498 123 470
+            C157 433 197 398 242 367
+            C300 328 374 302 449 289
+            C454 225 436 170 397 131
+            C357 90 310 78 260 78 Z
+          "/>
+          <path fill="#DCA83E" d="
+            M57 414
+            C153 426 240 471 322 512
+            L152 512
+            C91 512 56 475 57 414 Z
+          "/>
+          <path fill="white" d="
+            M55 300
+            C139 303 226 279 292 235
+            C301 229 307 219 298 211
+            C290 203 278 209 268 215
+            C204 259 129 279 58 276 Z
+          "/>
+          <path fill="white" d="
+            M208 26
+            C311 40 399 92 449 163
+            C441 166 432 169 423 172
+            C370 112 297 81 213 72 Z
+          "/>
+          <path fill="white" d="
+            M116 440
+            C178 379 257 327 351 301
+            C372 295 398 289 429 284
+            L454 310
+            C420 321 389 329 360 340
+            C270 367 197 411 142 467 Z
+          "/>
+        </svg>
+        <span>_S.I.L.K<sup>™</sup></span>
+      </a>
+      <span class="topbar-note">Organisational Intelligence</span>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-orbit" aria-hidden="true"></div>
+    <div class="shell hero-content">
+      <div class="eyebrow">Complaint Intelligence™ Framework</div>
+      <p class="hero-count">15,355</p>
+      <h1 class="hero-title" id="hero-title">Consumer Complaints</h1>
+      <p class="hero-subtitle">
+        Most organisations see complaints.<br>
+        <strong>_S.I.L.K sees organisational conditions.</strong>
+      </p>
+      <div class="pulse-line">
+        <span class="pulse-dot"></span>
+        From outcome to organisational insight
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true">
+      <span>Explore the intelligence</span><span></span>
+    </div>
+  </section>
+
+  <main>
+    <section class="experience shell" aria-labelledby="experience-title">
+      <div class="section-heading">
+        <div class="eyebrow">Interactive intelligence</div>
+        <h2 id="experience-title">One complaint. A deeper organisational signal.</h2>
+        <p>Select a complaint to reveal its organisational DNA, the conditions behind it, and the potential business impact.</p>
+      </div>
+
+      <div class="selector-card">
+        <p class="selector-label" id="selector-label">Select a complaint to begin</p>
+        <div class="complaint-options" role="group" aria-labelledby="selector-label">
+          <button class="complaint-option" type="button" data-complaint="late" aria-pressed="true">
+            <span class="option-indicator" aria-hidden="true"></span>
+            <span class="option-text">Late Delivery</span>
+          </button>
+          <button class="complaint-option" type="button" data-complaint="communication" aria-pressed="false">
+            <span class="option-indicator" aria-hidden="true"></span>
+            <span class="option-text">Poor Communication</span>
+          </button>
+          <button class="complaint-option" type="button" data-complaint="defective" aria-pressed="false">
+            <span class="option-indicator" aria-hidden="true"></span>
+            <span class="option-text">Defective Goods</span>
+          </button>
+          <button class="complaint-option" type="button" data-complaint="refund" aria-pressed="false">
+            <span class="option-indicator" aria-hidden="true"></span>
+            <span class="option-text">Refund Delays</span>
+          </button>
+          <button class="complaint-option" type="button" data-complaint="cancellation" aria-pressed="false">
+            <span class="option-indicator" aria-hidden="true"></span>
+            <span class="option-text">Cancellation Disputes</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="analysis-grid" aria-live="polite">
+        <article class="panel dna-panel" aria-labelledby="dna-title">
+          <div class="panel-heading">
+            <div>
+              <h3 id="dna-title">Complaint DNA™</h3>
+              <p id="dna-complaint">Late Delivery</p>
+            </div>
+            <span class="tag">DNA profile</span>
+          </div>
+
+          <div class="dna-wrap">
+            <svg class="helix-svg" id="helix" viewBox="0 0 240 260" role="img" aria-label="Animated organisational DNA helix">
+              <defs>
+                <linearGradient id="strandGradient" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#806b37"/>
+                  <stop offset="48%" stop-color="#f0d783"/>
+                  <stop offset="100%" stop-color="#a98a42"/>
+                </linearGradient>
+              </defs>
+              <ellipse class="helix-backdrop" cx="120" cy="130" rx="77" ry="113"/>
+              <g id="helix-lines"></g>
+              <path class="helix-strand" id="strand-one"></path>
+              <path class="helix-strand secondary" id="strand-two"></path>
+              <g id="helix-nodes"></g>
+              <circle r="2.5" fill="#fff0b7">
+                <animateMotion dur="5s" repeatCount="indefinite" path=""></animateMotion>
+              </circle>
+            </svg>
+            <div class="dna-legend" id="dna-legend" aria-label="DNA factors"></div>
+          </div>
+
+          <div class="dna-code-row">
+            <span class="dna-code-caption">DNA sequence</span>
+            <span class="dna-code" id="dna-code">L-P-A-W</span>
+          </div>
+          <div class="dna-signature">_S.I.L.K Organisational Signature™</div>
+        </article>
+
+        <article class="panel pathway-panel" aria-labelledby="pathway-title">
+          <div class="panel-heading">
+            <div>
+              <h3 id="pathway-title">Complaint-to-Condition™</h3>
+              <p>Follow the signal to its organisational source.</p>
+            </div>
+            <span class="tag">Diagnostic pathway</span>
+          </div>
+          <div class="pathway" id="pathway"></div>
+        </article>
+      </div>
+
+      <svg class="bridge" viewBox="0 0 600 42" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 21H600"></path>
+        <circle class="particle-a" cx="0" cy="21" r="2.2"></circle>
+        <circle class="particle-b" cx="0" cy="21" r="1.6"></circle>
+      </svg>
+
+      <section class="insight-card" aria-labelledby="insight-title">
+        <div>
+          <div class="eyebrow">Executive view</div>
+          <h3 class="insight-title" id="insight-title">_S.I.L.K Insight™</h3>
+          <p class="insight-intro">
+            The visible complaint is an outcome. The organisational condition is the signal.
+          </p>
+          <div class="root-label">Root organisational condition</div>
+          <div class="root-condition" id="root-condition">Workforce Planning Weakness</div>
+
+          <div class="exposure-score">
+            <div class="score-value" id="scoreValue">73%</div>
+            <div class="score-label">Organisational Health Exposure™</div>
+          </div>
+
+          <div class="insight-sequence" id="insight-sequence" aria-label="Complaint DNA factors"></div>
+        </div>
+
+        <div class="impact-column">
+          <h4 class="impact-title">Potential financial impact</h4>
+          <ul class="impact-list" id="impact-list"></ul>
+        </div>
+      </section>
+    </section>
+
+    <section class="finale" aria-labelledby="finale-title">
+      <div class="finale-content">
+        <div class="eyebrow">The organisational health stack</div>
+        <h3>The Complaint Is The Symptom.<br>The Organisation Is The Cause.</h3>
+
+        <div class="silk-stack" aria-label="Organisational Health Stack">
+          <span class="stack-item">Complaint</span>
+          <span class="stack-arrow" aria-hidden="true">↓</span>
+          <span class="stack-item">Customer Outcome</span>
+          <span class="stack-arrow" aria-hidden="true">↓</span>
+          <span class="stack-item">Operational Performance</span>
+          <span class="stack-arrow" aria-hidden="true">↓</span>
+          <span class="stack-item">Organisational Health</span>
+        </div>
+
+        <div class="framework-links" aria-label="Related intelligence frameworks">
+          <span>Complaint Intelligence™</span>
+          <span>CX Intelligence™</span>
+          <span>OHI™</span>
+          <span>AIR™</span>
+        </div>
+
+        <div class="finale-divider" aria-hidden="true"></div>
+        <h2 id="finale-title">
+          The CGSO sees the outcome. _S.I.L.K identifies the organisational conditions that created it.
+        </h2>
+        <p class="finale-statement">
+          Complaints are <strong>lag indicators.</strong><br>
+          Organisational health is the <strong>leading indicator.</strong>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <span class="footer-brand">
+        _S.I.L.K<sup>™</sup> &nbsp;·&nbsp; Organisational Intelligence
+      </span>
+      <span>Complaint Intelligence™ Framework</span>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const factors = {
+        L: "Leadership",
+        P: "Process",
+        A: "Accountability",
+        W: "Workforce",
+        G: "Governance",
+        Q: "Quality",
+        S: "Supplier"
+      };
+
+      const complaints = {
+        late: {
+          name: "Late Delivery",
+          factors: ["L", "P", "A", "W"],
+          score: 73,
+          steps: [
+            ["Complaint", "Late Delivery"],
+            ["Customer Experience Failure", "Service Failure"],
+            ["Operational Cause", "Capacity Bottleneck"],
+            ["Organisational Condition", "Workforce Planning"],
+            ["Leadership Signal", "Leadership Capability"],
+            ["Financial Impact", "Revenue & Trust Risk"]
+          ],
+          root: "Workforce Planning Weakness",
+          impacts: ["Customer Churn Risk", "Cost-to-Serve", "Brand Reputation Exposure"]
+        },
+        communication: {
+          name: "Poor Communication",
+          factors: ["G", "P", "A"],
+          score: 67,
+          steps: [
+            ["Complaint", "Poor Communication"],
+            ["Customer Experience Failure", "Information Gap"],
+            ["Operational Cause", "Unclear Communication Process"],
+            ["Organisational Condition", "Governance & Ownership Gap"],
+            ["Leadership Signal", "Communication Oversight"],
+            ["Financial Impact", "Retention & Trust Risk"]
+          ],
+          root: "Communication Governance Gap",
+          impacts: ["Customer Churn Risk", "Repeat Contact Costs", "Brand Reputation Exposure"]
+        },
+        defective: {
+          name: "Defective Goods",
+          factors: ["P", "Q", "A", "S"],
+          score: 81,
+          steps: [
+            ["Complaint", "Defective Goods"],
+            ["Customer Experience Failure", "Product Quality Failure"],
+            ["Operational Cause", "Quality Control Breakdown"],
+            ["Organisational Condition", "Supplier & Process Controls"],
+            ["Leadership Signal", "Quality Governance"],
+            ["Financial Impact", "Returns & Reputation Risk"]
+          ],
+          root: "Quality Assurance Weakness",
+          impacts: ["Returns & Replacement Costs", "Customer Churn Risk", "Brand Reputation Exposure"]
+        },
+        refund: {
+          name: "Refund Delays",
+          factors: ["G", "P", "A"],
+          score: 75,
+          steps: [
+            ["Complaint", "Refund Delays"],
+            ["Customer Experience Failure", "Delayed Resolution"],
+            ["Operational Cause", "Refund Process Bottleneck"],
+            ["Organisational Condition", "Governance & Ownership Gap"],
+            ["Leadership Signal", "Resolution Oversight"],
+            ["Financial Impact", "Working Capital & Retention Risk"]
+          ],
+          root: "Refund Process Accountability Gap",
+          impacts: ["Working Capital Pressure", "Repeat Contact Costs", "Customer Churn Risk"]
+        },
+        cancellation: {
+          name: "Cancellation Disputes",
+          factors: ["L", "G", "P", "A"],
+          score: 69,
+          steps: [
+            ["Complaint", "Cancellation Disputes"],
+            ["Customer Experience Failure", "Unresolved Cancellation"],
+            ["Operational Cause", "Conflicting Cancellation Process"],
+            ["Organisational Condition", "Policy & Accountability Gap"],
+            ["Leadership Signal", "Governance Capability"],
+            ["Financial Impact", "Revenue & Dispute Risk"]
+          ],
+          root: "Cancellation Governance Weakness",
+          impacts: ["Revenue Leakage", "Dispute Handling Costs", "Brand Reputation Exposure"]
+        }
+      };
+
+      const buttons = Array.from(document.querySelectorAll(".complaint-option"));
+      const legend = document.getElementById("dna-legend");
+      const pathway = document.getElementById("pathway");
+      const helixLines = document.getElementById("helix-lines");
+      const helixNodes = document.getElementById("helix-nodes");
+      const strandOne = document.getElementById("strand-one");
+      const strandTwo = document.getElementById("strand-two");
+      const motionPath = document.querySelector("#helix animateMotion");
+      const svgNS = "http://www.w3.org/2000/svg";
+
+      function makeSvgElement(name, attributes = {}) {
+        const element = document.createElementNS(svgNS, name);
+        Object.entries(attributes).forEach(([key, value]) => {
+          element.setAttribute(key, value);
+        });
+        return element;
+      }
+
+      function renderHelix(activeFactors) {
+        helixLines.replaceChildren();
+        helixNodes.replaceChildren();
+
+        const pointsOne = [];
+        const pointsTwo = [];
+        const activeIndexes = activeFactors.map((factor) =>
+          Object.keys(factors).indexOf(factor)
+        );
+
+        for (let i = 0; i <= 18; i++) {
+          const y = 18 + i * 12.4;
+          const angle = i * Math.PI / 4;
+          const xOne = 120 + Math.sin(angle) * 55;
+          const xTwo = 120 - Math.sin(angle) * 55;
+          const isActive =
+            i % 5 === 0 &&
+            activeIndexes.some((factorIndex) =>
+              i % 5 === factorIndex % 5
+            );
+
+          pointsOne.push(`${xOne.toFixed(1)},${y.toFixed(1)}`);
+          pointsTwo.push(`${xTwo.toFixed(1)},${y.toFixed(1)}`);
+
+          if (i % 2 === 0) {
+            helixLines.appendChild(makeSvgElement("line", {
+              x1: xOne.toFixed(1),
+              y1: y.toFixed(1),
+              x2: xTwo.toFixed(1),
+              y2: y.toFixed(1),
+              class: `helix-rung${isActive ? " active" : ""}`
+            }));
+
+            helixNodes.appendChild(makeSvgElement("circle", {
+              cx: xOne.toFixed(1),
+              cy: y.toFixed(1),
+              r: isActive ? "3.2" : "2.2",
+              class: `helix-node${isActive ? " active" : ""}`
+            }));
+
+            helixNodes.appendChild(makeSvgElement("circle", {
+              cx: xTwo.toFixed(1),
+              cy: y.toFixed(1),
+              r: isActive ? "3.2" : "2.2",
+              class: `helix-node${isActive ? " active" : ""}`
+            }));
+          }
+        }
+
+        const pathOne = "M" + pointsOne.join(" L");
+        strandOne.setAttribute("d", pathOne);
+        strandTwo.setAttribute("d", "M" + pointsTwo.join(" L"));
+        motionPath.setAttribute("path", pathOne);
+      }
+
+      function renderLegend(activeFactors) {
+        legend.replaceChildren();
+
+        Object.entries(factors).forEach(([letter, name]) => {
+          const item = document.createElement("div");
+          item.className =
+            `dna-factor${activeFactors.includes(letter) ? " is-active" : ""}`;
+
+          const badge = document.createElement("span");
+          badge.className = "factor-letter";
+          badge.textContent = letter;
+
+          const label = document.createElement("span");
+          label.textContent = name;
+
+          item.append(badge, label);
+          legend.appendChild(item);
+        });
+      }
+
+      function renderPathway(steps) {
+        pathway.replaceChildren();
+
+        steps.forEach(([label, value], index) => {
+          const step = document.createElement("div");
+          step.className = "path-step";
+
+          const marker = document.createElement("span");
+          marker.className = "step-marker";
+          marker.setAttribute("aria-hidden", "true");
+          marker.textContent = String(index + 1);
+
+          const copy = document.createElement("span");
+          copy.className = "step-copy";
+
+          const stepLabel = document.createElement("span");
+          stepLabel.className = "step-label";
+          stepLabel.textContent = label;
+
+          const stepValue = document.createElement("span");
+          stepValue.className = "step-value";
+          stepValue.textContent = value;
+
+          copy.append(stepLabel, stepValue);
+          step.append(marker, copy);
+          pathway.appendChild(step);
+        });
+      }
+
+      function renderImpacts(impacts) {
+        const list = document.getElementById("impact-list");
+        list.replaceChildren();
+
+        impacts.forEach((impact) => {
+          const item = document.createElement("li");
+
+          const arrow = document.createElement("span");
+          arrow.className = "impact-arrow";
+          arrow.setAttribute("aria-hidden", "true");
+          arrow.textContent = "↑";
+
+          const text = document.createElement("span");
+          text.textContent = impact;
+
+          item.append(arrow, text);
+          list.appendChild(item);
+        });
+      }
+
+      function update(complaintId) {
+        const complaint = complaints[complaintId];
+        if (!complaint) return;
+
+        buttons.forEach((button) => {
+          button.setAttribute(
+            "aria-pressed",
+            String(button.dataset.complaint === complaintId)
+          );
+        });
+
+        document.getElementById("dna-complaint").textContent = complaint.name;
+        document.getElementById("dna-code").textContent =
+          complaint.factors.join("-");
+        document.getElementById("root-condition").textContent =
+          complaint.root;
+        document.getElementById("scoreValue").textContent =
+          complaint.score + "%";
+
+        renderLegend(complaint.factors);
+        renderHelix(complaint.factors);
+        renderPathway(complaint.steps);
+        renderImpacts(complaint.impacts);
+
+        const sequence = document.getElementById("insight-sequence");
+        sequence.replaceChildren();
+
+        complaint.factors.forEach((factor) => {
+          const chip = document.createElement("span");
+          chip.className = "sequence-chip";
+          chip.textContent = factors[factor];
+          sequence.appendChild(chip);
+        });
+      }
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          update(button.dataset.complaint);
+        });
+      });
+
+      update("late");
+    })();
+  </script>
+</body>
+</html>
